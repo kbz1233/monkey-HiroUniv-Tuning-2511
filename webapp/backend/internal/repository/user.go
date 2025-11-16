@@ -20,14 +20,33 @@ func NewUserRepository(db DBTX) *UserRepository {
 // ログイン時に使用
 func (r *UserRepository) FindByUserName(ctx context.Context, userName string) (*model.User, error) {
 	var user model.User
-	query := "SELECT user_id, password_hash, user_name FROM users WHERE user_name = ?"
+    query := `
+        SELECT user_id, password_hash, user_name
+        FROM users
+        WHERE user_name = ?
+        LIMIT 1
+    `
 
-	err := r.db.GetContext(ctx, &user, query, userName)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, err
-		}
-		return nil, err
-	}
-	return &user, nil
+    err := r.db.GetContext(ctx, &user, query, userName)
+    if err != nil {
+        if errors.Is(err, sql.ErrNoRows) {
+            // 用户不存在
+            return nil, nil
+        }
+        return nil, err
+    }
+
+    return &user, nil
+	
+	// var user model.User
+	// query := "SELECT user_id, password_hash, user_name FROM users WHERE user_name = ?"
+
+	// err := r.db.GetContext(ctx, &user, query, userName)
+	// if err != nil {
+	// 	if errors.Is(err, sql.ErrNoRows) {
+	// 		return nil, err
+	// 	}
+	// 	return nil, err
+	// }
+	// return &user, nil
 }
