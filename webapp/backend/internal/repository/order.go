@@ -65,7 +65,7 @@ func (r *OrderRepository) GetShippingOrders(ctx context.Context) ([]model.Order,
 }
 
 // 注文履歴一覧を取得
-func (r *OrderRepository) (ctx context.Context, userID int, req model.ListRequest) ([]model.Order, int, error) {
+func (r *OrderRepository) ListOrders(ctx context.Context, userID int, req model.ListRequest) ([]model.Order, int, error) {
 ////<span style="color:red">// 优化点：一次性 JOIN 获取产品名称，避免 N+1 查询//</span>
     query := `
         SELECT
