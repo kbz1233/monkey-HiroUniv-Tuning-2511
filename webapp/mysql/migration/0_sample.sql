@@ -1,3 +1,4 @@
+-- このファイルに記述されたSQLコマンドが、マイグレーション時に実行されます。
 -- -- このファイルに記述されたSQLコマンドが、マイグレーション時に実行されます。
 -- -- -------------------------
 -- -- orders 表索引
@@ -30,22 +31,19 @@
 CREATE INDEX idx_name_id ON products(name, product_id);
 
 -- orders 表
-CREATE INDEX idx_orders_user_created_at ON orders(created_at, user_id);
-CREATE INDEX idx_orders_user_shipped_status ON orders(shipped_status,user_id);
-CREATE INDEX idx_orders_user_arrived_at ON orders(arrived_at,user_id);
+CREATE INDEX idx_orders_user_created_at ON orders(user_id, created_at);
+CREATE INDEX idx_orders_user_shipped_status ON orders(user_id, shipped_status);
+CREATE INDEX idx_orders_user_arrived_at ON orders(user_id, arrived_at);
 
 
--- -- session_id + expires_at 快速查询有效会话
--- CREATE INDEX idx_user_sessions_session_expires ON user_sessions(expires_at, session_uuid);
+-- session_id + expires_at 快速查询有效会话
+CREATE INDEX idx_user_sessions_session_expires ON user_sessions(session_uuid, expires_at);
 
 -- user_id + expires_at 查询某用户有效会话
---CREATE INDEX idx_user_sessions_user_expires ON user_sessions(expires_at, user_id);
+CREATE INDEX idx_user_sessions_user_expires ON user_sessions(user_id, expires_at);
 
 -- -------------------------
 -- users 表
 -- -------------------------
 -- user_name 唯一索引/快速查找
-CREATE UNIQUE INDEX idx_users_user_name ON users(user_name, user_id);
-
-CREATE INDEX idx_user_created_at ON orders(user_id);
-CREATE INDEX idx_product_id ON products(product_id);
+CREATE UNIQUE INDEX idx_users_user_name ON users(user_name);
